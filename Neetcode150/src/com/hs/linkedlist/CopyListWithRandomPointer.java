@@ -5,23 +5,17 @@ import java.util.Map;
 
 public class CopyListWithRandomPointer {
 	public ListNode copyRandomList(ListNode head) {
+		ListNode cur = head;
 		Map<ListNode, ListNode> map = new HashMap<>();
-		ListNode temp = head;
-
-		// first iteration for inserting deep nodes of every node in the map.
-		while (temp != null) {
-			ListNode newNode = new ListNode(temp.val);
-			map.put(temp, newNode);
-			temp = temp.next;
+		while (cur != null) {
+			map.put(cur, new ListNode(cur.val));
+			cur = cur.next;
 		}
-		ListNode t = head;
-
-		// second iteration for linking next and random pointer as given question.
-		while (t != null) {
-			ListNode node = map.get(t);
-			node.next = (t.next != null) ? map.get(t.next) : null;
-			node.random = (t.random != null) ? map.get(t.random) : null;
-			t = t.next;
+		cur = head;
+		while (cur != null) {
+			map.get(cur).next = map.get(cur.next);
+			map.get(cur).random = map.get(cur.random);
+			cur = cur.next;
 		}
 		return map.get(head);
 	}

@@ -1,29 +1,22 @@
 package com.hs.tree;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class KthSmallestNodeInBST {
 	public int kthSmallest(Node root, int k) {
-		int[] kthSmallest = new int[1];
-		kthSmallest[0] = k;
-		Node res = findKthSmallest(root, kthSmallest);
-		return res.data;
-	}
+        List<Integer> list = new ArrayList<>();
+        inorder(root, list);
+        return list.get(k - 1);
+    }
 
-	private Node findKthSmallest(Node root, int[] k) {
-		if (root == null)
-			return null;
+    private void inorder(Node root, List<Integer> list) {
+        if (root == null) return;
 
-		Node left = findKthSmallest(root.left, k);
-		if (left != null) {
-			return left;
-		}
-
-		k[0]--;
-		if (k[0] == 0) {
-			return root;
-		}
-
-		return findKthSmallest(root.right, k);
-	}
+        inorder(root.left, list);
+        list.add(root.data);
+        inorder(root.right, list);
+    }
 
 	public static void main(String[] args) {
 		KthSmallestNodeInBST tree = new KthSmallestNodeInBST();

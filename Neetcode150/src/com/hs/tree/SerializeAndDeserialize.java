@@ -1,45 +1,45 @@
 package com.hs.tree;
 
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SerializeAndDeserialize {
-	private String spliter = ",";
-	private String NN = "X";
+	private int i;
 
 	// Encodes a tree to a single string.
 	public String serialize(Node root) {
-		StringBuilder sb = new StringBuilder();
-		buildString(root, sb);
-		return sb.toString();
+		List<String> list = new ArrayList<>();
+		serializeDFS(root, list);
+
+		return String.join(",", list);
 	}
 
-	private void buildString(Node node, StringBuilder sb) {
-		if (node == null) {
-			sb.append(NN).append(spliter);
-		} else {
-			sb.append(node.data).append(spliter);
-			buildString(node.left, sb);
-			buildString(node.right, sb);
+	private void serializeDFS(Node root, List<String> list) {
+		if (root == null) {
+			list.add("N");
+			return;
 		}
+		list.add(String.valueOf(root.data));
+		serializeDFS(root.left, list);
+		serializeDFS(root.right, list);
 	}
 
 	// Decodes your encoded data to tree.
 	public Node deserialize(String data) {
-		Deque<String> nodes = new LinkedList<>();
-		nodes.addAll(Arrays.asList(data.split(spliter)));
-		return buildTree(nodes);
+		String[] tokens = data.split(",");
+		return deserializeDFS(tokens);
 	}
 
-	private Node buildTree(Deque<String> nodes) {
-		String val = nodes.remove();
-		if (val.equals(NN))
+	private Node deserializeDFS(String[] tokens) {
+		String token = tokens[this.i];
+		if (token.equals("N")) {
+			this.i++;
 			return null;
-
-		Node root = new Node(Integer.valueOf(val));
-		root.left = buildTree(nodes);
-		root.right = buildTree(nodes);
-		return root;
+		}
+		var node = new Node(Integer.parseInt(token));
+		this.i++;
+		node.left = deserializeDFS(tokens);
+		node.right = deserializeDFS(tokens);
+		return node;
 	}
 }

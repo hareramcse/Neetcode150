@@ -1,23 +1,25 @@
 package com.hs.binarysearch;
 
 public class SearchA2DMatrix {
-	public boolean searchMatrix(int[][] matrix, int target) {
-		int low = 0;
+	public boolean searchMatrix2(int[][] matrix, int target) {
 		if (matrix.length == 0)
 			return false;
-		int n = matrix.length;
-		int m = matrix[0].length;
-		int high = (n * m) - 1;
 
-		while (low <= high) {
-			int mid = (low + (high - low) / 2);
-			if (matrix[mid / m][mid % m] == target) {
+		int rows = matrix.length;
+		int columns = matrix[0].length;
+
+		int low = 0;
+		int high = rows * columns;
+
+		while (low < high) {
+			int mid = (low + high) / 2;
+
+			if (matrix[mid / columns][mid % columns] == target) {
 				return true;
-			}
-			if (matrix[mid / m][mid % m] < target) {
+			} else if (matrix[mid / columns][mid % columns] < target) {
 				low = mid + 1;
 			} else {
-				high = mid - 1;
+				high = mid;
 			}
 		}
 		return false;

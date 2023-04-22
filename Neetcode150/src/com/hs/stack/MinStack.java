@@ -3,48 +3,33 @@ package com.hs.stack;
 import java.util.Stack;
 
 public class MinStack {
-	Stack<Long> stack = new Stack<Long>();
-	Long minEle;
+	private Stack<Integer> stack;
+	private Stack<Integer> minStack;
 
 	public MinStack() {
-		minEle = Long.MAX_VALUE;
+		stack = new Stack<>();
+		minStack = new Stack<>();
 	}
 
-	public void push(int value) {
-		Long val = Long.valueOf(value);
-		if (stack.isEmpty()) {
-			minEle = val;
-			stack.push(val);
-		} else {
-			if (val < minEle) {
-				stack.push(2 * val - minEle);
-				minEle = val;
-			} else {
-				stack.push(val);
-			}
-		}
+	public void push(int val) {
+		stack.push(val);
+
+		// The min stack may be empty, so we need to check it
+		val = Math.min(val, minStack.isEmpty() ? val : minStack.peek());
+		minStack.push(val);
 	}
 
 	public void pop() {
-		if (stack.isEmpty())
-			return;
-
-		Long val = stack.pop();
-		if (val < minEle) {
-			minEle = 2 * minEle - val;
-		}
+		stack.pop();
+		minStack.pop();
 	}
 
 	public int top() {
-		Long val = stack.peek();
-		if (val < minEle) {
-			return minEle.intValue();
-		}
-		return val.intValue();
+		return stack.peek();
 	}
 
 	public int getMin() {
-		return minEle.intValue();
+		return minStack.peek();
 	}
 
 	public static void main(String[] args) {

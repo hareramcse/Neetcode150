@@ -1,17 +1,31 @@
 package com.hs.tree;
 
 public class SubtreeOfAnotherTree {
-	public boolean isSubtree(Node s, Node t) {
-		if (s == null)
-			return false;
-		if (isSameTree(s, t))
+	public boolean isSubtree(Node root, Node subRoot) {
+		if (root == null && subRoot == null) {
 			return true;
-		return isSubtree(s.left, t) || isSubtree(s.right, t);
+		}
+		if (root == null || subRoot == null) {
+			return false;
+		}
+		if (isSameTree(root, subRoot)) {
+			return true;
+		}
+
+		return (isSubtree(root.left, subRoot) || isSubtree(root.right, subRoot));
 	}
 
-	private boolean isSameTree(Node p, Node q) {
-		if (p == null || q == null)
-			return p == q;
-		return p.data == q.data && isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
+	private boolean isSameTree(Node root, Node subRoot) {
+		if (root == null && subRoot == null) {
+			return true;
+		}
+		if (root == null || subRoot == null) {
+			return false;
+		}
+		if (root.data == subRoot.data) {
+			return (isSameTree(root.left, subRoot.left) && isSameTree(root.right, subRoot.right));
+		}
+
+		return false;
 	}
 }

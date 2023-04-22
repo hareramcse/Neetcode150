@@ -1,110 +1,258 @@
 package com.hs.heap;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.PriorityQueue;
-import java.util.Queue;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-class Tweet {
-	public int id;
-	public int time;
-	public Tweet next = null;
+class User {
+	private int uid;
+	private Set<Integer> followingIDs;
+	private List<Integer> tweetIDs;
 
-	public Tweet(int id, int time) {
-		this.id = id;
-		this.time = time;
+	public User(int uid) {
+		this.uid = uid;
+		this.followingIDs = new HashSet<>();
+		this.followingIDs.add(this.uid); // by default, follows self
+		this.tweetIDs = new ArrayList<>();
+	}
+
+	public Set<Integer> getFollowingIDs() {
+		return this.followingIDs;
+	}
+
+	public List<Integer> getTweetIDs() {
+		return this.tweetIDs;
+	}
+
+	public int getID() {
+		return this.uid;
+	}
+
+	@Override
+	public String toString() {
+		return ("[" + this.uid + ", following: " + this.followingIDs + ", tweets: " + this.tweetIDs + "]");
+	}
+
+	// Most recent ones are at the end
+	public void follow(int fid) {
+		this.followingIDs.add(fid);
+	}
+
+	public void unfollow(int fid) {
+		this.followingIDs.remove(fid);
+	}
+
+	// If remove tweet existed, treeSet would've been used (to maintain ordering)
+	public void postTweet(int tweetID) {
+		this.tweetIDs.add(tweetID);
 	}
 }
 
-class User {
-	private int id;
-	public Set<Integer> followeeIds = new HashSet<>();
-	public Tweet tweetHead = null;
+class Tweet {
 
-	public User(int id) {
-		this.id = id;
-		follow(id); // follow himself
+	private int tweetID;
+	private int timestamp;
+
+	public Tweet(int tweetID, int timestamp) {
+		this.tweetID = tweetID;
+		this.timestamp = timestamp;
 	}
 
-	public void follow(int followeeId) {
-		followeeIds.add(followeeId);
+	public int getTimeStamp() {
+		return this.timestamp;
 	}
 
-	public void unfollow(int followeeId) {
-		followeeIds.remove(followeeId);
+	public Integer getTweetID() {
+		return this.tweetID;
 	}
 
-	public void post(int tweetId, int time) {
-		Tweet oldTweetHead = tweetHead;
-		tweetHead = new Tweet(tweetId, time);
-		tweetHead.next = oldTweetHead;
+	@Override
+	public String toString() {
+		return "{" + this.tweetID + "," + this.timestamp + "}";
+	}
+}
+
+class Database {
+
+	private static int GLOBAL_TIME = 0;
+
+	// 1 <= userID <= 500 ---> Can be 501 sized array instead of HashMap
+	private static int NUM_USERS = 501;
+	private User[] users;
+	private boolean[] userExists;
+
+	// 0 <= tweetID <= 10^4 --> Can be 10^4 + 1 sized array instead of HashMap
+	private static int NUM_TWEETS = 10000 + 1;
+	private Tweet[] tweets;
+
+	// Acts like a 'node' to indicate where to go next
+	class Triplet {
+
+		int userId;
+		int index;
+		int tweetID;
+
+		public Triplet(int userId, int index, int tweetID) {
+			this.userId = userId;
+			this.index = index;
+			this.tweetID = tweetID;
+		}
+
+		@Override
+		public String toString() {
+			return ("[" + this.userId + "," + this.index + "," + this.tweetID + "]");
+		}
+	}
+
+	// Compare the linked list of tweets present in the user class
+	// Nested class to access the 'tweets'
+	class TweetComparator implements Comparator<Triplet> {
+
+		@Override
+		public int compare(Triplet o1, Triplet o2) {
+			// Compare max. with respect to timestamp
+			return (tweets[o2.tweetID].getTimeStamp() - tweets[o1.tweetID].getTimeStamp());
+		}
+	}
+
+	// From outside, Database.TweetComparator obj = databaseObj.new
+	// TweetComparator()
+	private TweetComparator comparator;
+
+	// Constructor
+	public Database() {
+		this.users = new User[NUM_USERS];
+		this.userExists = new boolean[NUM_USERS];
+		Arrays.fill(this.userExists, false);
+
+		this.tweets = new Tweet[NUM_TWEETS];
+		this.comparator = new TweetComparator();
+	}
+
+	private void createUserMaybe(int uid) {
+		if (this.userExists[uid])
+			return;
+
+		this.userExists[uid] = true;
+		User user = new User(uid);
+		this.users[uid] = user;
+	}
+
+	private void createTweet(int tweetId) {
+		Tweet tweet = new Tweet(tweetId, Database.GLOBAL_TIME);
+		Database.GLOBAL_TIME++;
+		this.tweets[tweetId] = tweet;
+	}
+
+	public void postTweet(int uid, int tweetId) {
+		// Create new User if doesn't exist
+		createUserMaybe(uid);
+
+		// Create new Tweet
+		createTweet(tweetId);
+
+		// Post the tweet
+		this.users[uid].postTweet(tweetId);
+	}
+
+	public void follow(int followerId, int followeeId) {
+		// Create users if doesn't exist
+		createUserMaybe(followerId);
+		createUserMaybe(followeeId);
+
+		// Follow
+		this.users[followerId].follow(followeeId);
+	}
+
+	public void unfollow(int followerId, int followeeId) {
+		// Create users if doesn't exist
+		createUserMaybe(followerId);
+		createUserMaybe(followeeId);
+
+		// Unfollow
+		this.users[followerId].unfollow(followeeId);
+	}
+
+	private List<Tweet> getMaxTopK(int userId, int k) {
+		// Check if this user exists or not
+		if (!this.userExists[userId])
+			return new ArrayList<>();
+
+		// Use top k of sorted list type logic
+		PriorityQueue<Triplet> pq = new PriorityQueue<>(this.comparator);
+
+		User user = this.users[userId];
+		Set<Integer> followingIDs = user.getFollowingIDs();
+
+		// Take the most recent (i.e. last) tweet for each of the following user
+		for (int followingID : followingIDs) {
+			User followingUser = this.users[followingID];
+			List<Integer> followingUserTweetIds = followingUser.getTweetIDs();
+
+			if (followingUserTweetIds.isEmpty())
+				continue;
+
+			int lastIndex = followingUserTweetIds.size() - 1;
+			int mostRecentTweetID = followingUserTweetIds.get(lastIndex);
+			Triplet triplet = new Triplet(followingID, lastIndex, mostRecentTweetID);
+
+			pq.add(triplet);
+		}
+		// Now, remove from pq, and "move required pointers/links" accordingly
+		List<Tweet> maxTweets = new ArrayList<>();
+
+		while (!pq.isEmpty() && (maxTweets.size() < k)) {
+			Triplet top = pq.remove();
+			maxTweets.add(tweets[top.tweetID]);
+
+			// For this top's user, if 'lesser' recent tweet is available, add to pq
+			int userID = top.userId;
+			int nextIndex = top.index - 1; // move backwards due to ArrayList
+			if (nextIndex < 0)
+				continue;
+
+			int newTweetID = users[userID].getTweetIDs().get(nextIndex);
+			Triplet newTriplet = new Triplet(userID, nextIndex, newTweetID);
+			pq.add(newTriplet);
+		}
+
+		return maxTweets;
+	}
+
+	public List<Integer> getMaxTop10TweetIDs(int userId) {
+		List<Tweet> tweets = getMaxTopK(userId, 10);
+		// Instead of streams, normal for loop may also be used
+		return tweets.stream().map(x -> x.getTweetID()).collect(Collectors.toList());
 	}
 }
 
 public class DesignTwitter {
-	private int time = 0;
-	private Map<Integer, User> users = new HashMap<>(); // {userId: User}
 
-	// Compose a new tweet.
+	private Database db;
+
+	public DesignTwitter() {
+		this.db = new Database();
+	}
+
 	public void postTweet(int userId, int tweetId) {
-		users.putIfAbsent(userId, new User(userId));
-		users.get(userId).post(tweetId, time++);
+		this.db.postTweet(userId, tweetId);
 	}
 
-	/**
-	 * Retrieve the 10 most recent tweet ids in the user's news feed. Each item in
-	 * the news feed must be posted by users who the user followed or by the user
-	 * herself. Tweets must be ordered from most recent to least recent.
-	 */
 	public List<Integer> getNewsFeed(int userId) {
-		if (!users.containsKey(userId))
-			return new ArrayList<>();
-
-		List<Integer> newsFeed = new ArrayList<>();
-		Queue<Tweet> maxHeap = new PriorityQueue<>((a, b) -> b.time - a.time);
-
-		for (int followeeId : users.get(userId).followeeIds) {
-			Tweet tweetHead = users.get(followeeId).tweetHead;
-			if (tweetHead != null)
-				maxHeap.offer(tweetHead);
-		}
-
-		int count = 0;
-		while (!maxHeap.isEmpty() && count++ < 10) {
-			Tweet tweet = maxHeap.poll();
-			newsFeed.add(tweet.id);
-			if (tweet.next != null)
-				maxHeap.offer(tweet.next);
-		}
-
-		return newsFeed;
+		return db.getMaxTop10TweetIDs(userId);
 	}
 
-	/**
-	 * Follower follows a followee. If the operation is invalid, it should be a
-	 * no-op.
-	 */
 	public void follow(int followerId, int followeeId) {
-		if (followerId == followeeId)
-			return;
-		users.putIfAbsent(followerId, new User(followerId));
-		users.putIfAbsent(followeeId, new User(followeeId));
-		users.get(followerId).follow(followeeId);
+		this.db.follow(followerId, followeeId);
 	}
 
-	/**
-	 * Follower unfollows a followee. If the operation is invalid, it should be a
-	 * no-op.
-	 */
 	public void unfollow(int followerId, int followeeId) {
-		if (followerId == followeeId)
-			return;
-		if (users.containsKey(followerId) && users.containsKey(followeeId))
-			users.get(followerId).unfollow(followeeId);
+		this.db.unfollow(followerId, followeeId);
 	}
 
 	public static void main(String[] args) {

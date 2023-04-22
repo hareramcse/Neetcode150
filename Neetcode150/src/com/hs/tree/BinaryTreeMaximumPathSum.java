@@ -1,6 +1,6 @@
 package com.hs.tree;
 
-class MaximumPathSumFromRootToLeaf {
+public class BinaryTreeMaximumPathSum {
 	public int maxPathSum(Node root) {
 		int[] maxSum = new int[1];
 		maxSum[0] = Integer.MIN_VALUE;
@@ -19,7 +19,7 @@ class MaximumPathSumFromRootToLeaf {
 	}
 
 	public static void main(String[] args) {
-		MaximumPathSumFromRootToLeaf tree = new MaximumPathSumFromRootToLeaf();
+		BinaryTreeMaximumPathSum tree = new BinaryTreeMaximumPathSum();
 		Node root = new Node(1);
 		root.left = new Node(2);
 		root.right = new Node(3);

@@ -1,35 +1,22 @@
 package com.hs.twopointer;
 
 public class ContainerWithMostWater {
-	public int brutforce(int[] height) {
-		int maxWater = 0;
-		for (int i = 0; i < height.length; i++) {
-			for (int j = i + 1; j < height.length; j++) {
-				int lenght = Math.min(height[i], height[j]);
-				int width = j - i;
-				maxWater = Math.max(maxWater, lenght * width);
+	public int maxArea(int[] height) {
+		int left = 0;
+		int right = height.length - 1;
+		int res = 0;
+		while (left < right) {
+			int containerLength = right - left;
+			int area = containerLength * Math.min(height[left], height[right]);
+			res = Math.max(res, area);
+			if (height[left] < height[right]) {
+				left++;
+			} else {
+				right--;
 			}
 		}
-		return maxWater;
+		return res;
 	}
-
-	public int maxArea(int[] height) {
-        int maxWater = 0;
-        int start =0;
-        int end = height.length - 1;
-		
-        while(start < end){
-            int lenght = Math.min(height[start], height[end]);
-			int width = end - start;
-			maxWater = Math.max(maxWater, lenght * width);
-            if(height[start] > height[end]){
-                end--;
-            }else{
-                start++;
-            }
-        }
-		return maxWater;
-    }
 
 	public static void main(String[] args) {
 		int[] arr = { 1, 8, 6, 2, 5, 4, 8, 3, 7 };

@@ -1,29 +1,39 @@
 package com.hs.stack;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Stack;
 
 public class GenerateParentheses {
+	Stack<Character> stack = new Stack<>();
+    List<String> res = new ArrayList<>();
+    
 	public List<String> generateParenthesis(int n) {
-		List<String> result = new ArrayList<>();
-		backTrack("(", 1, 0, n, result);
-		return result;
-	}
+        backtrack(0, 0, n);
+        return res;
+    }
 
-	private void backTrack(String current, int open, int closed, int n, List<String> result) {
-		if (current.length() == 2 * n) {
-			result.add(current);
-			return;
-		}
-
-		if (open < n) {
-			backTrack(current + "(", open + 1, closed, n, result);
-		}
-
-		if (closed < open) {
-			backTrack(current + ")", open, closed + 1, n, result);
-		}
-	}
+    private void backtrack(int openN, int closedN, int n) {
+        if (openN == closedN && closedN == n) {
+            Iterator vale = stack.iterator();
+            String temp = "";
+            while (vale.hasNext()) {
+                temp = temp + vale.next();
+            }
+            res.add(temp);
+        }
+        if (openN < n) {
+            stack.push('(');
+            backtrack(openN + 1, closedN, n);
+            stack.pop();
+        }
+        if (closedN < openN) {
+            stack.push(')');
+            backtrack(openN, closedN + 1, n);
+            stack.pop();
+        }
+    }
 
 	public static void main(String[] args) {
 		GenerateParentheses obj = new GenerateParentheses();

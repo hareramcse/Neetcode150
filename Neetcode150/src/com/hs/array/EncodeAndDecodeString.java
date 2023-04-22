@@ -1,38 +1,30 @@
 package com.hs.array;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class EncodeAndDecodeString {
-	char DELIMITER = '#';
-
-	// Encodes a list of strings to a single string.
 	public String encode(List<String> strs) {
-		StringBuilder sb = new StringBuilder();
+		StringBuilder encodedString = new StringBuilder();
 		for (String str : strs) {
-			sb.append(str.length());
-			sb.append(DELIMITER);
-			sb.append(str);
+			encodedString.append(str.length()).append("#").append(str);
 		}
-		return sb.toString();
+		return encodedString.toString();
 	}
 
-	// Decodes a single string to a list of strings.
 	public List<String> decode(String str) {
-		List<String> res = new LinkedList<>();
-		int no = 0;
-		for (int i = 0; i < str.length(); i++) {
-			char ch = str.charAt(i);
-			if (Character.isDigit(ch)) {
-				no = no * 10 + (ch - '0');
-			} else if (ch == '#') {
-				String subString = str.substring(i + 1, no + i + 1);
-				res.add(subString);
-				no = 0;
-			}
+		List<String> list = new ArrayList<>();
+		int i = 0;
+		while (i < str.length()) {
+			int j = i;
+			while (str.charAt(j) != '#')
+				j++;
+
+			int length = Integer.valueOf(str.substring(i, j));
+			i = j + 1 + length;
+			list.add(str.substring(j + 1, i));
 		}
-		return res;
+		return list;
 	}
 
 	public static void main(String[] args) {

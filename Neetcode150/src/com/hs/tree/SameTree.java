@@ -2,9 +2,18 @@ package com.hs.tree;
 
 public class SameTree {
 	public boolean isSameTree(Node a, Node b) {
-		if (a == null || b == null)
-			return a == b;
+		if (a == null && b == null)
+			return true;
 
-		return (a.data == b.data) && isSameTree(a.left, b.left) && isSameTree(a.right, b.right);
+		if (a == null || b == null)
+			return false;
+
+		if (a.data != b.data)
+			return false;
+
+		boolean left = isSameTree(a.left, b.left);
+		boolean right = isSameTree(a.right, b.right);
+
+		return left && right;
 	}
 }

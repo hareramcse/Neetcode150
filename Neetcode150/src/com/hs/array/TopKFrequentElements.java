@@ -7,20 +7,24 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 
 public class TopKFrequentElements {
-	private int[] topKFrequent(int[] nums, int k) {
-		int res[] = new int[k];
+	public int[] topKFrequent(int[] nums, int k) {
+		int[] arr = new int[k];
 		Map<Integer, Integer> map = new HashMap<>();
 		for (int num : nums) {
 			map.put(num, map.getOrDefault(num, 0) + 1);
 		}
-
-		Queue<Integer> maxHeap = new PriorityQueue<>((a, b) -> map.get(b) - map.get(a));
-		maxHeap.addAll(map.keySet());
-
-		for (int i = 0; i < k; i++) {
-			res[i] = maxHeap.poll();
+		Queue<Map.Entry<Integer, Integer>> pq = new PriorityQueue<>((a, b) -> a.getValue() - b.getValue());
+		for (Map.Entry<Integer, Integer> it : map.entrySet()) {
+			pq.add(it);
+			if (pq.size() > k)
+				pq.poll();
 		}
-		return res;
+
+		int i = k;
+		while (!pq.isEmpty()) {
+			arr[--i] = pq.poll().getKey();
+		}
+		return arr;
 	}
 
 	public static void main(String[] args) {
