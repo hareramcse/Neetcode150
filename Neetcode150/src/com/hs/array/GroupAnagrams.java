@@ -11,16 +11,20 @@ public class GroupAnagrams {
 		List<List<String>> res = new ArrayList<>();
 		if (strs.length == 0)
 			return res;
-		
+
 		Map<String, List<String>> map = new HashMap<>();
 		for (String s : strs) {
-			int[] hash = new int[26];
+			int[] count = new int[26];
 			for (char c : s.toCharArray()) {
-				hash[c - 'a']++;
+				count[c - 'a']++;
 			}
-			String key = new String(Arrays.toString(hash));
-			map.computeIfAbsent(key, k -> new ArrayList<>());
-			map.get(key).add(s);
+			String key = new String(Arrays.toString(count));
+			List<String> list = map.get(key);
+			if (list == null) {
+				list = new ArrayList<>();
+			}
+			list.add(s);
+			map.put(key, list);
 		}
 		res.addAll(map.values());
 		return res;

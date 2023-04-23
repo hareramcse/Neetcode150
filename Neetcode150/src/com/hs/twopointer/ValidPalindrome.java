@@ -5,17 +5,17 @@ public class ValidPalindrome {
 		int i = 0;
 		int j = s.length() - 1;
 		while (i < j) {
-			Character start = s.charAt(i);
-			Character end = s.charAt(j);
-			if (!Character.isLetterOrDigit(start)) {
+			Character leftChar = s.charAt(i);
+			Character rightChar = s.charAt(j);
+			if (!Character.isLetterOrDigit(leftChar)) {
 				i++;
 				continue;
 			}
-			if (!Character.isLetterOrDigit(end)) {
+			if (!Character.isLetterOrDigit(rightChar)) {
 				j--;
 				continue;
 			}
-			if (Character.toLowerCase(start) != Character.toLowerCase(end)) {
+			if (Character.toLowerCase(leftChar) != Character.toLowerCase(rightChar)) {
 				return false;
 			}
 			i++;

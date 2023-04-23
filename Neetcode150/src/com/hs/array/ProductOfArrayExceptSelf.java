@@ -5,7 +5,7 @@ import java.util.Arrays;
 public class ProductOfArrayExceptSelf {
 	public int[] productExceptSelf(int[] nums) {
 		int[] arr = new int[nums.length];
-		int right = 1, left = 1;
+		int  left = 1, right = 1;
 		for (int i = 0; i < nums.length; i++) {
 			arr[i] = left;
 			left *= nums[i];

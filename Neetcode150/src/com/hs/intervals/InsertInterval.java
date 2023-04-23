@@ -6,23 +6,21 @@ import java.util.List;
 
 public class InsertInterval {
 	public int[][] insert(int[][] intervals, int[] newInterval) {
-		List<int[]> res = new ArrayList<>();
+        List<int[]> result = new ArrayList<>();
 		for (int[] interval : intervals) {
-			if (newInterval == null || interval[1] < newInterval[0])
-				res.add(interval);
-			else if (interval[0] > newInterval[1]) {
-				res.add(newInterval);
-				res.add(interval);
-				newInterval = null;
+			if (newInterval[0] > interval[1]) {
+				result.add(interval);
+			} else if (newInterval[1] < interval[0]) {
+				result.add(newInterval);
+				newInterval = interval;
 			} else {
-				newInterval[0] = Math.min(interval[0], newInterval[0]);
-				newInterval[1] = Math.max(interval[1], newInterval[1]);
+				newInterval[0] = Math.min(newInterval[0], interval[0]);
+				newInterval[1] = Math.max(newInterval[1], interval[1]);
 			}
 		}
-		if (newInterval != null)
-			res.add(newInterval);
-		return res.toArray(new int[res.size()][]);
-	}
+		result.add(newInterval);
+		return result.toArray(new int[result.size()][]);
+    }
 
 	public static void main(String[] args) {
 		InsertInterval obj = new InsertInterval();

@@ -18,7 +18,7 @@ public class MeetingRooms2 {
 			while (!queue.isEmpty() && interval.start >= queue.peek().end)
 				queue.poll();
 
-			queue.offer(interval);
+			queue.add(interval);
 			count = Math.max(count, queue.size());
 		}
 		return count;

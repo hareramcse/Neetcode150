@@ -18,6 +18,7 @@ public class PermutationInString {
 			if (j - i + 1 == s1.length()) {
 				if (Arrays.equals(s1Arr, s2Arr))
 					return true;
+				
 				s2Arr[s2.charAt(i) - 'a']--;
 				i++;
 			}

@@ -10,11 +10,12 @@ public class MergeIntervals {
 		Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));
 		ans.add(intervals[0]);
 		for (int i = 1; i < intervals.length; i++) {
-			// comparing the values of prevEnd and curEnd
+			// comparing the values of prevEnd and curStart
 			int curStart = intervals[i][0];
-			if (curStart <= ans.get(ans.size() - 1)[1]) {
+			int[] prevEnd = ans.get(ans.size() - 1);
+			if (prevEnd[1] >= curStart) {
 				// do the merging
-				ans.get(ans.size() - 1)[1] = Math.max(ans.get(ans.size() - 1)[1], intervals[i][1]);
+				prevEnd[1] = Math.max(prevEnd[1], intervals[i][1]);
 			} else {
 				ans.add(intervals[i]);
 			}

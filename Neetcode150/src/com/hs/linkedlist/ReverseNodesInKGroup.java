@@ -2,43 +2,23 @@ package com.hs.linkedlist;
 
 public class ReverseNodesInKGroup {
 	public ListNode reverseKGroup(ListNode head, int k) {
-		if (head == null || head.next == null)
-			return head;
-
 		ListNode current = head;
-		ListNode newHead = null;
-		ListNode nextNode = null;
-
-		// this case is only for if length of linkedlist size is not divisible by k
-		boolean isCheck = check(head, k);
-		if (isCheck) {
-			return head;
-		}
-
 		int count = 0;
-		while (current != null && count < k) {
-			nextNode = current.next;
-			current.next = newHead;
-			newHead = current;
-			current = nextNode;
+		while (current != null && count != k) {
+			current = current.next;
 			count++;
 		}
-
-		if (nextNode != null) {
-			head.next = reverseKGroup(nextNode, k);
+		if (count == k) {
+			current = reverseKGroup(current, k);
+			while (count-- > 0) {
+				ListNode temp = head.next;
+				head.next = current;
+				current = head;
+				head = temp;
+			}
+			head = current;
 		}
-
-		return newHead;
-	}
-
-	private boolean check(ListNode head, int k) {
-		ListNode temp = head;
-		int count = 0;
-		while (temp != null) {
-			temp = temp.next;
-			count++;
-		}
-		return count < k ? true : false;
+		return head;
 	}
 
 	public static void main(String[] args) {

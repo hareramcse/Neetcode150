@@ -6,28 +6,26 @@ public class NonOverlappingIntervals {
 	public int eraseOverlapIntervals(int[][] intervals) {
 		int intervalsRemoved = 0;
 
-		Arrays.sort(intervals, (arr1, arr2) -> Integer.compare(arr1[0], arr2[0]));
-
-		int[] intervalFirst = intervals[0];
+		Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));
+		int[] firstInterval = intervals[0];
 
 		for (int i = 1; i < intervals.length; i++) {
-			if (firstIntervalwithinSecond(intervalFirst, intervals[i])) {
+			if (firstIntervalwithinSecond(firstInterval, intervals[i])) {
 				// mark first interval to be removed
 				intervalsRemoved++;
-				// determine which interval to remove
-				// remove the interval that ends last
-				if (intervalFirst[1] > intervals[i][1]) {
-					intervalFirst = intervals[i];
+				// determines which interval to remove, remove the interval that ends last
+				if (firstInterval[1] > intervals[i][1]) {
+					firstInterval = intervals[i];
 				}
 			} else {
-				intervalFirst = intervals[i];
+				firstInterval = intervals[i];
 			}
 		}
 		return intervalsRemoved;
 	}
 
-	public boolean firstIntervalwithinSecond(int[] intervalFirst, int[] intervalSecond) {
-		return intervalSecond[0] < intervalFirst[1];
+	public boolean firstIntervalwithinSecond(int[] firstInterval, int[] secondInterval) {
+		return firstInterval[1] > secondInterval[0];
 	}
 
 	public static void main(String[] args) {

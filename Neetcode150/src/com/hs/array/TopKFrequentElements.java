@@ -14,15 +14,14 @@ public class TopKFrequentElements {
 			map.put(num, map.getOrDefault(num, 0) + 1);
 		}
 		Queue<Map.Entry<Integer, Integer>> pq = new PriorityQueue<>((a, b) -> a.getValue() - b.getValue());
-		for (Map.Entry<Integer, Integer> it : map.entrySet()) {
-			pq.add(it);
+		for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+			pq.add(entry);
 			if (pq.size() > k)
 				pq.poll();
 		}
 
-		int i = k;
 		while (!pq.isEmpty()) {
-			arr[--i] = pq.poll().getKey();
+			arr[--k] = pq.poll().getKey();
 		}
 		return arr;
 	}

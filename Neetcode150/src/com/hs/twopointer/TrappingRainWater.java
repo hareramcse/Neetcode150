@@ -5,19 +5,19 @@ public class TrappingRainWater {
 		if (heights.length == 0)
 			return 0;
 
-		int l = 0, r = heights.length - 1;
-		int leftMax = heights[l], rightMax = heights[r];
+		int left = 0, right = heights.length - 1;
+		int leftMax = heights[right], rightMax = heights[right];
 		int res = 0;
 
-		while (l < r) {
+		while (left < right) {
 			if (leftMax < rightMax) {
-				l++;
-				leftMax = Math.max(leftMax, heights[l]);
-				res += leftMax - heights[l];
+				left++;
+				leftMax = Math.max(leftMax, heights[left]);
+				res += leftMax - heights[left];
 			} else {
-				r--;
-				rightMax = Math.max(rightMax, heights[r]);
-				res += rightMax - heights[r];
+				right--;
+				rightMax = Math.max(rightMax, heights[right]);
+				res += rightMax - heights[right];
 			}
 		}
 

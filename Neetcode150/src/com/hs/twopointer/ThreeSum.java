@@ -18,7 +18,7 @@ public class ThreeSum {
 
 				while (left < right) {
 					if (nums[left] + nums[right] == target) {
-						ArrayList<Integer> miniSol = new ArrayList<>();
+						List<Integer> miniSol = new ArrayList<>();
 						miniSol.add(nums[i]);
 						miniSol.add(nums[left]);
 						miniSol.add(nums[right]);
@@ -45,7 +45,6 @@ public class ThreeSum {
 	public static void main(String[] args) {
 		ThreeSum obj = new ThreeSum();
 		int[] nums = { -1, 0, 1, 2, -1, -4 };
-		// List<List<Integer>> result = obj.brutForce(nums);
 		List<List<Integer>> result = obj.threeSum(nums);
 		System.out.println(result);
 	}
