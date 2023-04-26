@@ -1,5 +1,6 @@
 package com.hs.intervals;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -22,5 +23,18 @@ public class MeetingRooms2 {
 			count = Math.max(count, queue.size());
 		}
 		return count;
+	}
+
+	public static void main(String[] args) {
+		List<Interval> list = new ArrayList<>();
+		list.add(new Interval(0, 30));
+		list.add(new Interval(5, 10));
+		list.add(new Interval(15, 20));
+		list.add(new Interval(7, 12));
+		list.add(new Interval(25, 30));
+
+		MeetingRooms2 obj = new MeetingRooms2();
+		int result = obj.minMeetingRooms(list);
+		System.out.println(result);
 	}
 }

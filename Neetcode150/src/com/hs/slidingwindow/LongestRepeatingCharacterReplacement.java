@@ -9,6 +9,8 @@ public class LongestRepeatingCharacterReplacement {
         for (int j = 0; j < s.length(); j++) {
             arr[s.charAt(j) - 'A']++;
             max = Math.max(max, arr[s.charAt(j) - 'A']);
+            
+            // (windowSize - count of most frequent element) > k
             if (j - i + 1 - max > k) {
                 arr[s.charAt(i) - 'A']--;
                 i++;

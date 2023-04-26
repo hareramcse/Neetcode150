@@ -12,7 +12,7 @@ public class NumberOf1Bits {
 
 	public static void main(String[] args) {
 		NumberOf1Bits obj = new NumberOf1Bits();
-		int n = 00000000000000000000000000001011;
+		int n = 000000000000000000000010101011;
 		int result = obj.hammingWeight(n);
 		System.out.println(result);
 	}

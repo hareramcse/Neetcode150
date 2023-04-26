@@ -2,12 +2,10 @@ package com.hs.bitmanipulation;
 
 public class SingleNumber {
 	public int singleNumber(int[] nums) {
-		int l = nums.length;
-		int res = 0;
-		for (int i = 0; i < l; i++) {
-			res = res ^ nums[i];
-		}
-		return res;
+		int ans = nums[0];
+		for (int i = 1; i < nums.length; i++)
+			ans ^= nums[i];
+		return ans;
 	}
 
 	public static void main(String[] args) {

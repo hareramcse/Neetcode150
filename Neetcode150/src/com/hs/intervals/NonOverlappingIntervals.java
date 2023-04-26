@@ -4,28 +4,24 @@ import java.util.Arrays;
 
 public class NonOverlappingIntervals {
 	public int eraseOverlapIntervals(int[][] intervals) {
-		int intervalsRemoved = 0;
+		int count = 0;
 
 		Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));
-		int[] firstInterval = intervals[0];
+		int prevEnd = intervals[0][1];
 
 		for (int i = 1; i < intervals.length; i++) {
-			if (firstIntervalwithinSecond(firstInterval, intervals[i])) {
+			int curStart = intervals[i][0];
+			int curEnd = intervals[i][1];
+			if (prevEnd > curStart) {
 				// mark first interval to be removed
-				intervalsRemoved++;
+				count++;
 				// determines which interval to remove, remove the interval that ends last
-				if (firstInterval[1] > intervals[i][1]) {
-					firstInterval = intervals[i];
-				}
+				prevEnd = Math.min(prevEnd, curEnd);
 			} else {
-				firstInterval = intervals[i];
+				prevEnd = curEnd;
 			}
 		}
-		return intervalsRemoved;
-	}
-
-	public boolean firstIntervalwithinSecond(int[] firstInterval, int[] secondInterval) {
-		return firstInterval[1] > secondInterval[0];
+		return count;
 	}
 
 	public static void main(String[] args) {

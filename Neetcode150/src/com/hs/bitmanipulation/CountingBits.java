@@ -4,18 +4,22 @@ import java.util.Arrays;
 
 public class CountingBits {
 	public int[] countBits(int n) {
-		int[] ans = new int[n + 1];
-		ans[0] = 0;
+        int[] ans = new int[n + 1];
 
-		for (int i = 1; i <= n; i++) {
-			if (i % 2 == 0) {
-				ans[i] = ans[i / 2];
-			} else {
-				ans[i] = ans[i - 1] + 1;
-			}
-		}
-		return ans;
-	}
+        for (int i = 0; i <= n; i++) {
+            ans[i] = count(i);
+        }
+        return ans;
+    }
+
+    private int count(int x) {
+        int count = 0;
+        while (x != 0) {
+			x &= x - 1;
+            count++;
+        }
+        return count;
+    }
 
 	public static void main(String[] args) {
 		CountingBits obj = new CountingBits();

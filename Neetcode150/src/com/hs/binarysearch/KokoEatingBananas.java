@@ -2,7 +2,7 @@ package com.hs.binarysearch;
 
 public class KokoEatingBananas {
 	public int minEatingSpeed(int[] piles, int h) {
-		// Initalize the left and right boundaries
+		// Initialize the left and right boundaries
 		int left = 1, right = 1;
 		for (int pile : piles) {
 			right = Math.max(right, pile);
