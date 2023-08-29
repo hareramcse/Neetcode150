@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Subset2 {
+public class Subsets2 {
 	public List<List<Integer>> subsetsWithDup(int[] nums) {
         Arrays.sort(nums);
 		List<List<Integer>> ans = new ArrayList<>();

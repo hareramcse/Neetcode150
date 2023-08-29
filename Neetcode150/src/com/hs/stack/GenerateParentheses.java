@@ -16,10 +16,10 @@ public class GenerateParentheses {
 
     private void backtrack(int openN, int closedN, int n) {
         if (openN == closedN && closedN == n) {
-            Iterator vale = stack.iterator();
+            Iterator<Character> it = stack.iterator();
             String temp = "";
-            while (vale.hasNext()) {
-                temp = temp + vale.next();
+            while (it.hasNext()) {
+                temp = temp + it.next();
             }
             res.add(temp);
         }
